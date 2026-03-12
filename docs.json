@@ -1,13 +1,13 @@
 {
   "name": "Lumine.js",
   "developer": "Kanaka Nakazawa",
-  "description": "Lumine.js",
+  "description": "Multi platform bot framework",
   "docs": [
     {
       "name": "lumined.js",
-      "description": "Hello this is the documentation for lumine Discord",
+      "description": "Discord implementation for Lumine",
       "version": "1.0.0",
-      "subDocs":[
+      "subDocs": [
         {
           "type": "text",
           "value": "Installation method, you can use <code>npm</code> like:"
@@ -15,168 +15,287 @@
         {
           "type": "codeblock",
           "language": "shell",
-          "value": "npm i Lumine-js/lumined.js"
+          "value": "npm install Lumine-js/lumined.js"
         }
-        ],
+      ],
       "docs": [
         {
           "name": "Client",
-          "description": "",
-          "type":"Class",
-          "params":[{"name":"clientObject", "type":"Object<ClientDiscord>"}],
-          "examples": [{
-              "description": "You can make bot use this example",
-              "code": "const bot = new Client();\nbot.login(token) //Paste your token",
-              "alert": "If you don't add the <code>token</code> in the <code>Client()</code>, you can use <code>login(token)</code>"
+          "type": "Class",
+          "description": "Main client used to interact with Discord Gateway and REST API.",
+          "constructor": {
+            "signature": "new Client(options?: ClientOptions)",
+            "description": "Create a new Lumine client instance.",
+            "params": [
+              {
+                "name": "options",
+                "type": "ClientOptions",
+                "required": false,
+                "description": "Configuration for the client."
+              }
+            ],
+            "examples": [
+              {
+                "javascript": "const { Client } = require(\"lumined.js\")\n\nconst client = new Client({\n intents: 513\n})"
+              }
+            ]
           },
+          "members": [
             {
-              "description": "Alternatively, you can put the token into the client in this way:",
-              "code": "const bot = new Client({\n  token: \"place your token here\"\n});\nbot.login()",
-              "alert": "You don't need to put the <code>token</code> in <code>login(token)</code>"
-          }],
-          "object": [
+              "name": "user",
+              "type": "UserClient",
+              "kind": "property",
+              "description": "Represents the logged in bot user."
+            },
+            {
+              "name": "ws",
+              "type": "WebSocket",
+              "kind": "property",
+              "description": "WebSocket connection used for the Discord gateway."
+            },
             {
               "name": "login",
-              "description": "Test",
-              "type": "Method",
+              "kind": "method",
+              "signature": "login(token?: string): void",
+              "description": "Login to Discord and start the gateway connection.",
               "params": [
                 {
                   "name": "token",
-                  "description": "",
-                  "type": "String",
-                  "required": false
+                  "type": "string",
+                  "required": false,
+                  "description": "Bot token. If not provided, token from constructor options will be used."
                 }
-                ]
-            }
-            ]
-        },
-        {
-          "name": "Embed",
-          "description": "You want make embed? use this builder, Optional if you want to create an embed but are afraid of forgetting some important things",
-          "type": "Class",
-          "examples": [{
-              "description": "Simple embed",
-              "code": "const bot = new Embed()\n.setTitle(\"Embed Title\")\n.setDescription(\"You can make description anything\")",
-              "alert": ""
-          }],
-          "object": [
-            {
-              "name": "setTitle",
-              "description": "Make embed title",
-              "type": "Method",
-              "params": [
+              ],
+              "examples": [
                 {
-                  "name": "title",
-                  "description": "",
-                  "type": "String",
-                  "required": true
+                  "javascript": "client.login(\"YOUR_BOT_TOKEN\")"
                 }
-                ]
-            },
-            {
-              "name": "setDescription",
-              "description": "Make embed description",
-              "type": "Method",
-              "params": [
-                {
-                  "name": "description",
-                  "description": "",
-                  "type": "String",
-                  "required": true
-                }
-                ]
-            },
-            {
-              "name": "setFooter",
-              "description": "Make embed description",
-              "type": "Method",
-              "params": [
-                {
-                  "name": "footer",
-                  "description": "",
-                  "type": "Object<FooterObject>",
-                  "required": true
-                            }
               ]
+            },
+            {
+              "name": "destroy",
+              "kind": "method",
+              "signature": "destroy(): void",
+              "description": "Close the WebSocket connection and stop the bot."
+            },
+            {
+              "name": "updateCommands",
+              "kind": "method",
+              "signature": "updateCommands(commands: Array<Object>, guildId?: string): Promise<void>",
+              "description": "Register or update application commands.",
+              "params": [
+                {
+                  "name": "commands",
+                  "type": "Array<Object>",
+                  "required": true,
+                  "description": "Array of command definitions."
+                },
+                {
+                  "name": "guildId",
+                  "type": "string",
+                  "required": false,
+                  "description": "Guild ID to register commands for. If omitted, commands will be global."
+                }
+              ],
+              "examples": [
+                {
+                  "javascript": "await client.updateCommands([\n  {\n    name: \"ping\",\n    description: \"Check bot latency\"\n  }\n])"
+                }
+              ]
+            },
+            {
+              "name": "sendMessage",
+              "kind": "method",
+              "signature": "sendMessage(channelId: string, content: Object): Promise<Object>",
+              "description": "Send a message to a channel.",
+              "params": [
+                {
+                  "name": "channelId",
+                  "type": "string",
+                  "required": true,
+                  "description": "Channel ID where the message will be sent."
+                },
+                {
+                  "name": "content",
+                  "type": "Object",
+                  "required": true,
+                  "description": "Message payload."
+                }
+              ],
+              "examples": [
+                {
+                  "javascript": "await client.sendMessage(\"123456789\", {\n content: \"Hello world\"\n})"
+                }
+              ]
+            },
+            {
+              "name": "getUser",
+              "kind": "method",
+              "signature": "getUser(userId: string): Promise<Object>",
+              "description": "Fetch a user from the Discord API.",
+              "params": [
+                {
+                  "name": "userId",
+                  "type": "string",
+                  "required": true,
+                  "description": "ID of the user."
+                }
+              ],
+              "examples": [
+                {
+                  "javascript": "const user = await client.getUser(\"123456789\")"
+                }
+              ]
+            },
+            {
+              "name": "getChannel",
+              "kind": "method",
+              "signature": "getChannel(channelId: string): Promise<Object>",
+              "description": "Fetch a channel from the Discord API.",
+              "params": [
+                {
+                  "name": "channelId",
+                  "type": "string",
+                  "required": true,
+                  "description": "ID of the channel."
+                }
+              ],
+              "examples": [
+                {
+                  "javascript": "const channel = await client.getChannel(\"123456789\")"
+                }
+              ]
+            },
+            {
+              "name": "ready",
+              "kind": "event",
+              "description": "Emitted when the client has successfully connected to Discord.",
+              "params": [
+                {
+                  "name": "client",
+                  "type": "UserClient",
+                  "description": "The logged in bot user."
+                }
+              ],
+              "examples": [
+                {
+                  "javascript": "client.on(\"ready\", (user) => {\n console.log(\"Bot logged in as\", user.username)\n})"
+                }
+              ]
+            },
+            {
+              "name": "interactionCreate",
+              "kind": "event",
+              "description": "Emitted when an interaction is created."
+            },
+            {
+              "name": "ChatInputInteraction",
+              "kind": "event",
+              "description": "Emitted when a slash command interaction is received."
+            },
+            {
+              "name": "ButtonInteraction",
+              "kind": "event",
+              "description": "Emitted when a button interaction is received."
+            },
+            {
+              "name": "Autocomplete",
+              "kind": "event",
+              "description": "Emitted when an autocomplete interaction is triggered."
+            },
+            {
+              "name": "rawEvent",
+              "kind": "event",
+              "description": "Emitted for every raw gateway event."
+            },
+            {
+              "name": "moduleLogging",
+              "kind": "event",
+              "description": "Internal logging event emitted by Lumine."
             }
-            ]
+          ]
         }
-        ]
+      ]
     },
     {
       "name": "lumineg.js",
-      "description": "Hello this is the documentation for lumine Guilded",
+      "description": "Guilded implementation for Lumine",
       "version": "1.0.0",
       "docs": [
         {
           "name": "Client",
-          "description": "",
           "type": "Class",
-          "examples": [{
-              "description": "You can make bot use this example",
-              "code": "const bot = new Client();\nbot.login(token) //Paste your token",
-              "alert": "If you don't add the <code>token</code> in the <code>Client()</code>, you can use <code>login(token)</code>"
-          },
+          "description": "Guilded bot client",
+          "signature": "new Client(options?: ClientGuilded)",
+          "examples": [
             {
-              "description": "Alternatively, you can put the token into the client in this way:",
-              "code": "const bot = new Client({\n  token: \"place your token here\"\n});\nbot.login()",
-              "alert": "You don't need to put the <code>token</code> in <code>login(token)</code>"
-          }],
-          "object": [
+              "description": "Create bot client",
+              "code": {
+                "javascript": "const bot = new Client();\nbot.login(token);",
+                "typescript": "const bot = new Client();\nawait bot.login(token);"
+              }
+            }
+          ],
+          "members": [
             {
               "name": "login",
-              "description": "Test",
               "type": "Method",
+              "signature": "login(token?: string): Promise<void>",
+              "description": "Login bot to Guilded",
               "params": [
                 {
                   "name": "token",
-                  "description": "",
-                  "type": "String",
+                  "type": "string",
                   "required": false
                 }
-                ]
+              ],
+              "returns": {
+                "type": "Promise<void>"
+              }
             }
-            ]
+          ]
         }
-
-        ]
+      ]
     },
     {
       "name": "luminer.js",
-      "description": "Hello this is the documentation for lumine Revolt",
+      "description": "Revolt implementation for Lumine",
       "version": "1.0.0",
       "docs": [
         {
           "name": "Client",
-          "description": "",
-          "type":"Class",
-          "examples": [{
-              "description": "You can make bot use this example",
-              "code": "const bot = new Client();\nbot.login(token) //Paste your token",
-              "alert": "If you don't add the <code>token</code> in the <code>Client()</code>, you can use <code>login(token)</code>"
-          },
+          "type": "Class",
+          "description": "Revolt bot client",
+          "signature": "new Client(options?: ClientRevolt)",
+          "examples": [
             {
-              "description": "Alternatively, you can put the token into the client in this way:",
-              "code": "const bot = new Client({\n  token: \"place your token here\"\n});\nbot.login()",
-              "alert": "You don't need to put the <code>token</code> in <code>login(token)</code>"
-          }],
-          "object": [
+              "description": "Create bot client",
+              "code": {
+                "javascript": "const bot = new Client();\nbot.login(token);",
+                "typescript": "const bot = new Client();\nawait bot.login(token);"
+              }
+            }
+          ],
+          "members": [
             {
               "name": "login",
-              "description": "Test",
               "type": "Method",
+              "signature": "login(token?: string): Promise<void>",
+              "description": "Login bot to Revolt",
               "params": [
                 {
                   "name": "token",
-                  "description": "",
-                  "type": "String",
+                  "type": "string",
                   "required": false
                 }
-                ]
+              ],
+              "returns": {
+                "type": "Promise<void>"
+              }
             }
-            ]
+          ]
         }
-        ]
+      ]
     }
-    ]
+  ]
 }
