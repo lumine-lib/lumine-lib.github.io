@@ -4,7 +4,7 @@
   "description": "Multi platform bot framework",
   "docs": [
     {
-      "name": "lumined.js",
+      "name": "lumine-discord.js",
       "description": "Discord implementation for Lumine",
       "version": "1.0.0",
       "subDocs": [
@@ -15,7 +15,196 @@
         {
           "type": "codeblock",
           "language": "shell",
-          "value": "npm install Lumine-js/lumined.js"
+          "value": "npm install lumine-connect/lumine-discord.js"
+        }
+      ],
+      "docs": [
+        {
+          "name": "Client",
+          "type": "Class",
+          "description": "Main client used to interact with Discord Gateway and REST API.",
+          "constructor": {
+            "signature": "new Client(options?: ClientOptions)",
+            "description": "Create a new Lumine client instance.",
+            "params": [
+              {
+                "name": "options",
+                "type": "ClientOptions",
+                "required": false,
+                "description": "Configuration for the client."
+              }
+            ],
+            "examples": [
+              {
+                "javascript": "const { Client } = require(\"lumined.js\")\n\nconst client = new Client({\n intents: 513\n})"
+              }
+            ]
+          },
+          "members": [
+            {
+              "name": "user",
+              "type": "UserClient",
+              "kind": "property",
+              "description": "Represents the logged in bot user."
+            },
+            {
+              "name": "ws",
+              "type": "WebSocket",
+              "kind": "property",
+              "description": "WebSocket connection used for the Discord gateway."
+            },
+            {
+              "name": "login",
+              "kind": "method",
+              "signature": "login(token?: string): void",
+              "description": "Login to Discord and start the gateway connection.",
+              "params": [
+                {
+                  "name": "token",
+                  "type": "string",
+                  "required": false,
+                  "description": "Bot token. If not provided, token from constructor options will be used."
+                }
+              ],
+              "examples": [
+                {
+                  "javascript": "client.login(\"YOUR_BOT_TOKEN\")"
+                }
+              ]
+            },
+            {
+              "name": "destroy",
+              "kind": "method",
+              "signature": "destroy(): void",
+              "description": "Close the WebSocket connection and stop the bot."
+            },
+            {
+              "name": "updateCommands",
+              "kind": "method",
+              "signature": "updateCommands(commands: Array<Object>, guildId?: string): Promise<void>",
+              "description": "Register or update application commands.",
+              "params": [
+                {
+                  "name": "commands",
+                  "type": "Array<Object>",
+                  "required": true,
+                  "description": "Array of command definitions."
+                },
+                {
+                  "name": "guildId",
+                  "type": "string",
+                  "required": false,
+                  "description": "Guild ID to register commands for. If omitted, commands will be global."
+                }
+              ],
+              "examples": [
+                {
+                  "javascript": "await client.updateCommands([\n  {\n    name: \"ping\",\n    description: \"Check bot latency\"\n  }\n])"
+                }
+              ]
+            },
+            {
+              "name": "getUser",
+              "kind": "method",
+              "signature": "getUser(userId: string): Promise<Object>",
+              "description": "Fetch a user from the Discord API.",
+              "params": [
+                {
+                  "name": "userId",
+                  "type": "string",
+                  "required": true,
+                  "description": "ID of the user."
+                }
+              ],
+              "examples": [
+                {
+                  "javascript": "const user = await client.getUser(\"123456789\")"
+                }
+              ]
+            },
+            {
+              "name": "getChannel",
+              "kind": "method",
+              "signature": "getChannel(channelId: string): Promise<Object>",
+              "description": "Fetch a channel from the Discord API.",
+              "params": [
+                {
+                  "name": "channelId",
+                  "type": "string",
+                  "required": true,
+                  "description": "ID of the channel."
+                }
+              ],
+              "examples": [
+                {
+                  "javascript": "const channel = await client.getChannel(\"123456789\")"
+                }
+              ]
+            },
+            {
+              "name": "ready",
+              "kind": "event",
+              "description": "Emitted when the client has successfully connected to Discord.",
+              "params": [
+                {
+                  "name": "client",
+                  "type": "UserClient",
+                  "description": "The logged in bot user."
+                }
+              ],
+              "examples": [
+                {
+                  "javascript": "client.on(\"ready\", (user) => {\n console.log(\"Bot logged in as\", user.username)\n})"
+                }
+              ]
+            },
+            {
+              "name": "interactionCreate",
+              "kind": "event",
+              "description": "Emitted when an interaction is created."
+            },
+            {
+              "name": "ChatInputInteraction",
+              "kind": "event",
+              "description": "Emitted when a slash command interaction is received."
+            },
+            {
+              "name": "ButtonInteraction",
+              "kind": "event",
+              "description": "Emitted when a button interaction is received."
+            },
+            {
+              "name": "Autocomplete",
+              "kind": "event",
+              "description": "Emitted when an autocomplete interaction is triggered."
+            },
+            {
+              "name": "rawEvent",
+              "kind": "event",
+              "description": "Emitted for every raw gateway event."
+            },
+            {
+              "name": "moduleLogging",
+              "kind": "event",
+              "description": "Internal logging event emitted by Lumine."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lumine-stoat.js",
+      "description": "Stoat implementation for Lumine",
+      "version": "1.0.0",
+      "subDocs": [
+        {
+          "type": "text",
+          "value": "Installation method, you can use <code>npm</code> like:"
+        },
+        {
+          "type": "codeblock",
+          "language": "shell",
+          "value": "npm install lumine-connect/lumine-stoat.js"
         }
       ],
       "docs": [
@@ -167,131 +356,35 @@
               ]
             },
             {
-              "name": "ready",
-              "kind": "event",
-              "description": "Emitted when the client has successfully connected to Discord.",
+              "name": "destroy",
+              "kind": "method",
+              "signature": "destroy(): void",
+              "description": "Close the WebSocket connection and stop the bot."
+            },
+            {
+              "name": "updateCommands",
+              "kind": "method",
+              "signature": "updateCommands(commands: Array<Object>, guildId?: string): Promise<void>",
+              "description": "Register or update application commands.",
               "params": [
                 {
-                  "name": "client",
-                  "type": "UserClient",
-                  "description": "The logged in bot user."
+                  "name": "commands",
+                  "type": "Array<Object>",
+                  "required": true,
+                  "description": "Array of command definitions."
+                },
+                {
+                  "name": "guildId",
+                  "type": "string",
+                  "required": false,
+                  "description": "Guild ID to register commands for. If omitted, commands will be global."
                 }
               ],
               "examples": [
                 {
-                  "javascript": "client.on(\"ready\", (user) => {\n console.log(\"Bot logged in as\", user.username)\n})"
+                  "javascript": "await client.updateCommands([\n  {\n    name: \"ping\",\n    description: \"Check bot latency\"\n  }\n])"
                 }
               ]
-            },
-            {
-              "name": "interactionCreate",
-              "kind": "event",
-              "description": "Emitted when an interaction is created."
-            },
-            {
-              "name": "ChatInputInteraction",
-              "kind": "event",
-              "description": "Emitted when a slash command interaction is received."
-            },
-            {
-              "name": "ButtonInteraction",
-              "kind": "event",
-              "description": "Emitted when a button interaction is received."
-            },
-            {
-              "name": "Autocomplete",
-              "kind": "event",
-              "description": "Emitted when an autocomplete interaction is triggered."
-            },
-            {
-              "name": "rawEvent",
-              "kind": "event",
-              "description": "Emitted for every raw gateway event."
-            },
-            {
-              "name": "moduleLogging",
-              "kind": "event",
-              "description": "Internal logging event emitted by Lumine."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "lumineg.js",
-      "description": "Guilded implementation for Lumine",
-      "version": "1.0.0",
-      "docs": [
-        {
-          "name": "Client",
-          "type": "Class",
-          "description": "Guilded bot client",
-          "signature": "new Client(options?: ClientGuilded)",
-          "examples": [
-            {
-              "description": "Create bot client",
-              "code": {
-                "javascript": "const bot = new Client();\nbot.login(token);",
-                "typescript": "const bot = new Client();\nawait bot.login(token);"
-              }
-            }
-          ],
-          "members": [
-            {
-              "name": "login",
-              "type": "Method",
-              "signature": "login(token?: string): Promise<void>",
-              "description": "Login bot to Guilded",
-              "params": [
-                {
-                  "name": "token",
-                  "type": "string",
-                  "required": false
-                }
-              ],
-              "returns": {
-                "type": "Promise<void>"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "luminer.js",
-      "description": "Revolt implementation for Lumine",
-      "version": "1.0.0",
-      "docs": [
-        {
-          "name": "Client",
-          "type": "Class",
-          "description": "Revolt bot client",
-          "signature": "new Client(options?: ClientRevolt)",
-          "examples": [
-            {
-              "description": "Create bot client",
-              "code": {
-                "javascript": "const bot = new Client();\nbot.login(token);",
-                "typescript": "const bot = new Client();\nawait bot.login(token);"
-              }
-            }
-          ],
-          "members": [
-            {
-              "name": "login",
-              "type": "Method",
-              "signature": "login(token?: string): Promise<void>",
-              "description": "Login bot to Revolt",
-              "params": [
-                {
-                  "name": "token",
-                  "type": "string",
-                  "required": false
-                }
-              ],
-              "returns": {
-                "type": "Promise<void>"
-              }
             }
           ]
         }
